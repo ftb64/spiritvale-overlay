@@ -1,0 +1,4 @@
+use tauri::{Manager, WebviewWindow};
+use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
+fn toggle_palette(window: &WebviewWindow) { if window.is_visible().unwrap_or(false) { let _=window.hide(); } else { let _=window.show(); let _=window.set_focus(); } }
+fn main() { tauri::Builder::default().plugin(tauri_plugin_opener::init()).plugin(tauri_plugin_global_shortcut::Builder::new().build()).setup(|app| { let shortcut=Shortcut::new(Some(Modifiers::CONTROL|Modifiers::ALT),Code::KeyE); app.global_shortcut().on_shortcut(shortcut,|app,_,_| { if let Some(window)=app.get_webview_window("main") { toggle_palette(&window); } })?; Ok(()) }).run(tauri::generate_context!()).expect("error while running SpiritVale Overlay"); }
