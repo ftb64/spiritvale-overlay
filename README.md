@@ -14,7 +14,6 @@ Get the current stable build from the [v1.0.0 release](https://github.com/ftb64/
 
 - **Windows installer** — recommended for most players.
 - **Portable ZIP** — portable EXE packaged as a ZIP download.
-- **SHA-256 checksums** — verify downloaded files if needed.
 
 ### Features
 
@@ -68,7 +67,6 @@ npm run tauri build
 
 - **Windows installer** — แนะนำสำหรับผู้เล่นส่วนใหญ่
 - **Portable ZIP** — ไฟล์ Portable EXE ในรูปแบบ ZIP
-- **SHA-256 checksums** — ใช้ตรวจสอบความถูกต้องของไฟล์ที่ดาวน์โหลด
 
 ### ความสามารถ
 
