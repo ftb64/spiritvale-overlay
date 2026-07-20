@@ -1,6 +1,6 @@
 [package]
 name="spiritvale-overlay"
-version="0.1.1"
+version="1.0.0"
 description="A read-only SpiritVale game-reference overlay"
 authors= ["SpiritVale"]
 edition="2021"
@@ -10,5 +10,9 @@ tauri-build= {version="2",features= [] }
 tauri= {version="2",features= [] }
 tauri-plugin-global-shortcut="2"
 tauri-plugin-opener="2"
+regex="1"
+reqwest= {version="0.13",default-features=false,features= ["rustls"] }
+serde= {version="1",features= ["derive"] }
+serde_json="1"
 [features]
 custom-protocol= ["tauri/custom-protocol"]
