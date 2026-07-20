@@ -1,6 +1,6 @@
 [package]
 name="spiritvale-overlay"
-version="0.1.0"
+version="0.1.1"
 description="A read-only SpiritVale game-reference overlay"
 authors= ["SpiritVale"]
 edition="2021"
