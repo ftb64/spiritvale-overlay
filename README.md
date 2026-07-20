@@ -13,7 +13,6 @@ A Windows desktop companion for browsing the **SpiritVale** database without lea
 Get the current stable build from the [v1.0.0 release](https://github.com/ftb64/spiritvale-overlay/releases/tag/v1.0.0).
 
 - **Windows installer** — recommended for most players.
-- **Portable EXE** — run directly, with no installation.
 - **Portable ZIP** — portable EXE packaged as a ZIP download.
 - **SHA-256 checksums** — verify downloaded files if needed.
 
@@ -68,7 +67,6 @@ npm run tauri build
 ดาวน์โหลดเวอร์ชันเสถียรล่าสุดได้จาก [v1.0.0 release](https://github.com/ftb64/spiritvale-overlay/releases/tag/v1.0.0)
 
 - **Windows installer** — แนะนำสำหรับผู้เล่นส่วนใหญ่
-- **Portable EXE** — เปิดใช้งานได้ทันที โดยไม่ต้องติดตั้ง
 - **Portable ZIP** — ไฟล์ Portable EXE ในรูปแบบ ZIP
 - **SHA-256 checksums** — ใช้ตรวจสอบความถูกต้องของไฟล์ที่ดาวน์โหลด
 
