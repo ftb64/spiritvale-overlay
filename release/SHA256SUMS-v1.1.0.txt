@@ -1,0 +1,3 @@
+877b2efbf05cce4de5475d8506c22ef06baa901fa81a0a1bc2a0f27ff67189e3  SpiritVale-Overlay-v1.1.0-windows-x64-setup.exe
+d6acee494c0d577d9ff0cbe3da32dd6a6917a5b432fe3dfbf87a6e2fa4bf6439  SpiritVale-Overlay-v1.1.0-windows-x64.exe
+5f8374000968914011f2cb497f57d665a2408b723bb247d8f925cbc918d26ae7  SpiritVale-Overlay-v1.1.0-windows-x64-portable.zip
