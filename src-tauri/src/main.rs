@@ -123,6 +123,18 @@ fn map_monsters(object: &Map<String, Value>) -> String {
   }
   monsters.join("\n")
 }
+fn display_decimal(value: f64) -> String {
+  if value.fract() == 0.0 { format!("{}", value as i64) } else { value.to_string() }
+}
+fn skill_metric(object: &Map<String, Value>, key: &str, unit: &str) -> String {
+  let Some(metric) = object.get("values").and_then(Value::as_object).and_then(|values| values.get(key)).and_then(Value::as_object) else { return String::new(); };
+  let Some(base) = metric.get("base").and_then(Value::as_f64) else { return String::new(); };
+  let level = metric.get("level").and_then(Value::as_f64).unwrap_or(0.0);
+  let base = display_decimal(base);
+  if level > 0.0 { format!("{base} + {} {unit} per level", display_decimal(level)) }
+  else if level < -1.0 { format!("{base} - {} {unit} per level", display_decimal(-level)) }
+  else { format!("{base} {unit}") }
+}
 fn parse_entries(payload: &str, property: &str, kind: &str, path: &str, dropped_by: &HashMap<String, Vec<String>>, monster_locations: &HashMap<String, Vec<String>>) -> Result<Vec<CatalogEntry>, String> {
   let capture = Regex::new(r#"data-page=\"([^\"]+)\""#).expect("valid page regex").captures(payload).ok_or("SpiritVale Info did not provide database data.")?;
   let page: Value = serde_json::from_str(&capture[1].replace("&quot;", "\"").replace("&amp;", "&")).map_err(|error| error.to_string())?;
@@ -141,6 +153,12 @@ fn parse_entries(payload: &str, property: &str, kind: &str, path: &str, dropped_
       let per_refine = strings(object, &["statsPerRefine"]); if !per_refine.is_empty() { fields.push(CatalogField { label: "Per refine".into(), value: per_refine }); }
     } else if kind == "Maps" {
       let monsters = map_monsters(object); if !monsters.is_empty() { fields.push(CatalogField { label: "Monsters".into(), value: monsters }); }
+    } else if kind == "Skills" {
+      let skill_type = if object.get("isPassive").and_then(Value::as_bool).unwrap_or(false) { "Passive" } else { "Active" };
+      fields.push(CatalogField { label: "Type".into(), value: skill_type.into() });
+      let max_level = number(object, "MaxLv"); if !max_level.is_empty() { fields.push(CatalogField { label: "Max level".into(), value: max_level }); }
+      let cooldown = skill_metric(object, "cooldown", "seconds"); if !cooldown.is_empty() { fields.push(CatalogField { label: "Cooldown".into(), value: cooldown }); }
+      let cost = skill_metric(object, "cost", "mana"); if !cost.is_empty() { fields.push(CatalogField { label: "Cost".into(), value: cost }); }
     } else { let stats = strings(object, &["stats", "statsPrimary", "statsSecondary", "statsFullSet", "skillList"]);
       if !stats.is_empty() { fields.push(CatalogField { label: "Stats".into(), value: stats }); }
       let slots = number(object, "Slots"); if !slots.is_empty() { fields.push(CatalogField { label: "Card slots".into(), value: slots }); }
