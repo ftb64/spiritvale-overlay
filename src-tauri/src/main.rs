@@ -123,6 +123,28 @@ fn map_monsters(object: &Map<String, Value>) -> String {
   }
   monsters.join("\n")
 }
+fn crafting(object: &Map<String, Value>) -> String {
+  let Some(recipe) = object.get("crafting").and_then(Value::as_object) else { return String::new(); };
+  let mut lines = Vec::new();
+  if let Some(map) = recipe.get("map").and_then(Value::as_object) {
+    let name = text(map, &["DisplayName", "GameId", "Name", "name"]);
+    if !name.is_empty() {
+      let min_level = map.get("MonsterMinLevel").and_then(Value::as_i64).unwrap_or_default();
+      let max_level = map.get("MonsterMaxLevel").and_then(Value::as_i64).unwrap_or_default();
+      let location = if min_level > 0 && max_level > 0 { format!("Crafted in {name} (Lv {min_level} - {max_level})") }
+        else if min_level > 0 { format!("Crafted in {name} (Lv {min_level}+)") }
+        else { format!("Crafted in {name}") };
+      lines.push(location);
+    }
+  }
+  for material in recipe.get("materials").and_then(Value::as_array).into_iter().flatten() {
+    let Some(material) = material.as_object() else { continue; };
+    let name = material.get("item").and_then(Value::as_object).map(|item| text(item, &["DisplayName", "GameId", "Name", "name"])).unwrap_or_default();
+    let count = material.get("count").and_then(Value::as_f64).map(display_decimal).unwrap_or_default();
+    if !name.is_empty() && !count.is_empty() { lines.push(format!("{count} × {name}")); }
+  }
+  lines.join("\n")
+}
 fn display_decimal(value: f64) -> String {
   if value.fract() == 0.0 { format!("{}", value as i64) } else { value.to_string() }
 }
@@ -159,7 +181,8 @@ fn parse_entries(payload: &str, property: &str, kind: &str, path: &str, dropped_
       let max_level = number(object, "MaxLv"); if !max_level.is_empty() { fields.push(CatalogField { label: "Max level".into(), value: max_level }); }
       let cooldown = skill_metric(object, "cooldown", "seconds"); if !cooldown.is_empty() { fields.push(CatalogField { label: "Cooldown".into(), value: cooldown }); }
       let cost = skill_metric(object, "cost", "mana"); if !cost.is_empty() { fields.push(CatalogField { label: "Cost".into(), value: cost }); }
-    } else { let stats = strings(object, &["stats", "statsPrimary", "statsSecondary", "statsFullSet", "skillList"]);
+    } else { let crafting_details = crafting(object); if !crafting_details.is_empty() { fields.push(CatalogField { label: "Crafting".into(), value: crafting_details }); }
+      let stats = strings(object, &["stats", "statsPrimary", "statsSecondary", "statsFullSet", "skillList"]);
       if !stats.is_empty() { fields.push(CatalogField { label: "Stats".into(), value: stats }); }
       let slots = number(object, "Slots"); if !slots.is_empty() { fields.push(CatalogField { label: "Card slots".into(), value: slots }); }
       let obtained = related(object); if !obtained.is_empty() { fields.push(CatalogField { label: "Obtained from".into(), value: obtained }); }
